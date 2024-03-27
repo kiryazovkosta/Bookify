@@ -1,12 +1,4 @@
-﻿// ------------------------------------------------------------------------------------------------
-//  <copyright file="Review.cs" company="Business Management System Ltd.">
-//      Copyright "2024" (c), Business Management System Ltd.
-//      All rights reserved.
-//  </copyright>
-//  <author>Kosta.Kiryazov</author>
-// ------------------------------------------------------------------------------------------------
-
-namespace Bookify.Domain.Reviews;
+﻿namespace Bookify.Domain.Reviews;
 
 using Abstractions;
 using Bookings;

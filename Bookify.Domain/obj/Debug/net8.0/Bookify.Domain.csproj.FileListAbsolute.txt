@@ -6,6 +6,7 @@ E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.GeneratedMSBuildE
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.AssemblyInfoInputs.cache
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.AssemblyInfo.cs
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.csproj.CoreCompileInputs.cache
+E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.sourcelink.json
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.dll
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\refint\Bookify.Domain.dll
 E:\Devs\Bookify\Bookify.Domain\obj\Debug\net8.0\Bookify.Domain.pdb
