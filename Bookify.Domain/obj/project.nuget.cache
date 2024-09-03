@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "MvSiTtcMUxM=",
+  "dgSpecHash": "3i5EZYwdPQc=",
   "success": true,
   "projectFilePath": "D:\\Devs\\Bookify\\Bookify.Domain\\Bookify.Domain.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\kosta\\.nuget\\packages\\mediatr.contracts\\2.0.1\\mediatr.contracts.2.0.1.nupkg.sha512"
+  ],
   "logs": []
 }

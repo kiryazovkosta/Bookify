@@ -1,0 +1,105 @@
+# Ignore build output directories
+bin/
+obj/
+
+# VS Code directories
+.vscode/
+
+# User-specific files and Visual Studio folders
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated files by the build
+project.lock.json
+project.fragment.lock.json
+
+# Dotnet SDK tools
+.dotnet_tool/
+
+# Local NuGet packages
+*.nupkg
+*.snupkg
+
+# NuGet Packages Folder
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+# Folder config file
+Desktop.ini
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows shortcuts
+*.lnk
+
+# JetBrains Rider
+.idea/
+
+# Rider plugin files
+.idea_modules/
+
+# Rider logs and scratch files
+.idea/inspectionProfiles/
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# Dotnet SDK tools
+.dotnet_tool/
+
+# Python virtual environments
+env/
+.venv/
+env.bak/
+.venv.bak/
+
+# ASP.NET Core Server KeyStore files
+*.pfx
+*.p12
+
+# Windows Certificate Store Files
+*.cer
+*.crt
+*.der
+
+# Dependency directories
+node_modules/
+
+# NPM package lock file
+package-lock.json
+
+# Coverage directory for code coverage reports
+coverage/
+
+# Comment the next line if you have submodules
+*.publishsettings
+
+# Azure Web App publish settings. To prevent confusion, do not include .pubxml files
+# or the .pubxml.user file to source control. Deploy these files to the target
+# environment after the initial deployment.
+PublishProfiles/
+
+# StyleCop
+StyleCopReport.xml
+
+# Stop tracking files that were once added but should not be under version control.
+# Backup files are left intact in case you have local changes.
+!*.sln
+!*.csproj
