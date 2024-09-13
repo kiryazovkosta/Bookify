@@ -16,13 +16,16 @@ public sealed class User : Entity
     {
     }
     
-    public FirstName FirstName { get; init; }
-    public LastName LastName { get; init; }
-    public Email Email { get; init; }
+    public required FirstName FirstName { get; init; }
+    public required LastName LastName { get; init; }
+    public required Email Email { get; init; }
 
     public static User Create(FirstName firstName, LastName lastName, Email email)
     {
-        var user = new User(Guid.NewGuid(), firstName, lastName, email);
+        var user = new User(Guid.NewGuid(), firstName, lastName, email)
+        {
+            FirstName = firstName, LastName = lastName, Email = email
+        };
         
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
         return user;

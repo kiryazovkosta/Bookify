@@ -18,7 +18,7 @@ public sealed class Booking : Entity
         BookingStatus status,
         DateTime createdOnUtc) : base(id)
     {
-        ApartmentId = apartmentId; 
+        ApartmentId = apartmentId;
         UserId = userId;
         Duration = duration;
         PriceForPeriod = priceForPeriod;
@@ -35,11 +35,11 @@ public sealed class Booking : Entity
 
     public Guid ApartmentId { get; private set; }
     public Guid UserId { get; private set; }
-    public DateRange Duration { get; private set; }
-    public Money PriceForPeriod { get; init; }
-    public Money CleaningFee { get; init; }
-    public Money AmenitiesUpCharge { get; init; }
-    public Money TotalPrice { get; init; }
+    public required DateRange Duration { get; init; }
+    public required Money PriceForPeriod { get; init; }
+    public required Money CleaningFee { get; init; }
+    public required Money AmenitiesUpCharge { get; init; }
+    public required Money TotalPrice { get; init; }
     public BookingStatus Status { get; private set; }
     public DateTime CreatedOnUtc { get; private set; }
     public DateTime? ConfirmedOnUtc { get; private set; }
@@ -49,29 +49,34 @@ public sealed class Booking : Entity
 
     public static Booking Reserve(
         Apartment apartment,
-        Guid userId, 
+        Guid userId,
         DateRange duration,
         DateTime utcNow,
         PricingService pricingService)
     {
         var pricingDetails = pricingService.CalculatePrice(apartment, duration);
-        
+
         var booking = new Booking(
-            Guid.NewGuid(), 
-            apartment.Id, 
-            userId, 
+            Guid.NewGuid(),
+            apartment.Id,
+            userId,
             duration,
             pricingDetails.PriceForPeriod,
-            pricingDetails.CleaningFee, 
-            pricingDetails.AmenitiesUpCharge, 
-            pricingDetails.TotalPrice, 
-            BookingStatus.Reserved, 
-            utcNow);
-        
+            pricingDetails.CleaningFee,
+            pricingDetails.AmenitiesUpCharge,
+            pricingDetails.TotalPrice,
+            BookingStatus.Reserved,
+            utcNow)
+        {
+            Duration = duration, PriceForPeriod = pricingDetails.PriceForPeriod,
+            CleaningFee = pricingDetails.CleaningFee, AmenitiesUpCharge = pricingDetails.AmenitiesUpCharge,
+            TotalPrice = pricingDetails.TotalPrice
+        };
+
         booking.RaiseDomainEvent(new BookingReservedDomainEvent(booking.Id));
-        
+
         apartment.LastBookedOnUtc = utcNow;
-        
+
         return booking;
     }
 
@@ -81,63 +86,63 @@ public sealed class Booking : Entity
         {
             return Result.Failure(BookingErrors.NotReserved);
         }
-        
+
         Status = BookingStatus.Confirmed;
         ConfirmedOnUtc = utcNow;
-        
+
         RaiseDomainEvent(new BookingConfirmedDomainEvent(Id));
-        
+
         return Result.Success();
     }
-    
+
     public Result Reject(DateTime utcNow)
     {
         if (Status != BookingStatus.Reserved)
         {
             return Result.Failure(BookingErrors.NotReserved);
         }
-        
+
         Status = BookingStatus.Rejected;
         RejectedOnUtc = utcNow;
-        
+
         RaiseDomainEvent(new BookingRejectedDomainEvent(Id));
-        
+
         return Result.Success();
     }
-    
+
     public Result Complete(DateTime utcNow)
     {
         if (Status != BookingStatus.Confirmed)
         {
             return Result.Failure(BookingErrors.NotConfirmed);
         }
-        
+
         Status = BookingStatus.Completed;
         CompletedOnUtc = utcNow;
-        
+
         RaiseDomainEvent(new BookingCompletedDomainEvent(Id));
-        
+
         return Result.Success();
     }
-    
+
     public Result Cancel(DateTime utcNow)
     {
         if (Status != BookingStatus.Confirmed)
         {
             return Result.Failure(BookingErrors.NotConfirmed);
         }
-        
+
         var currentDate = DateOnly.FromDateTime(utcNow);
         if (currentDate > Duration.Start)
         {
             return Result.Failure(BookingErrors.AlreadyStarted);
         }
-        
+
         Status = BookingStatus.Cancelled;
         CancelledOnUtc = utcNow;
-        
+
         RaiseDomainEvent(new BookingCancelledDomainEvent(Id));
-        
+
         return Result.Success();
     }
 }
