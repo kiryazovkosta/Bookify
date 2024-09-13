@@ -1,9 +1,19 @@
 namespace Bookify.Domain.Abstractions;
 
-public abstract class Entity(Guid id) : IEquatable<Entity>
+public abstract class Entity : IEquatable<Entity>
 {
     private readonly List<IDomainEvent> _domainEvents = [];
-    public Guid Id { get; init; } = id;
+
+    protected Entity(Guid id)
+    {
+        Id = id;
+    }
+
+    protected Entity()
+    {
+    }
+
+    public Guid Id { get; init; }
 
     public bool Equals(Entity? other)
     {

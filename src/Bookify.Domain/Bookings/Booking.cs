@@ -28,23 +28,23 @@ public sealed class Booking : Entity
         Status = status;
         CreatedOnUtc = createdOnUtc;
     }
-    
+
+    private Booking()
+    {
+    }
+
     public Guid ApartmentId { get; private set; }
     public Guid UserId { get; private set; }
-    public DateRange Duration { get; init; }
+    public DateRange Duration { get; private set; }
     public Money PriceForPeriod { get; init; }
     public Money CleaningFee { get; init; }
     public Money AmenitiesUpCharge { get; init; }
     public Money TotalPrice { get; init; }
     public BookingStatus Status { get; private set; }
     public DateTime CreatedOnUtc { get; private set; }
-    
     public DateTime? ConfirmedOnUtc { get; private set; }
-    
     public DateTime? RejectedOnUtc { get; private set; }
-    
     public DateTime? CompletedOnUtc { get; private set; }
-    
     public DateTime? CancelledOnUtc { get; private set; }
 
     public static Booking Reserve(
