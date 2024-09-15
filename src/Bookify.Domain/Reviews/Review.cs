@@ -24,19 +24,18 @@ public sealed class Review : Entity
         CreatedOnUtc = createdOnUtc;
     }
 
-    private Review() { }
+    private Review()
+    {
+        Rating = Rating.Create(1).Value ?? throw new InvalidOperationException();
+        Comment = new Comment(string.Empty);
+    }
 
-    public Guid ApartmentId { get; private set; }
-
-    public Guid BookingId { get; private set; }
-
-    public Guid UserId { get; private set; }
-
-    public Rating Rating { get; private set; }
-
-    public Comment Comment { get; private set; }
-
-    public DateTime CreatedOnUtc { get; private set; }
+    public Guid ApartmentId { get; init; }
+    public Guid BookingId { get; init; }
+    public Guid UserId { get; init; }
+    public Rating Rating { get; init; }
+    public Comment Comment { get; init; }
+    public DateTime CreatedOnUtc { get; init; }
 
     public static Result<Review> Create(
         Booking booking,

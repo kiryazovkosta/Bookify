@@ -1,7 +1,7 @@
 services:
   bookify.api:
     image: ${DOCKER_REGISTRY-}bookifyapi
-    container_name: bookify.api
+    container_name: Bookify.Api
     build:
       context: .
       dockerfile: src/Bookify.Api/Dockerfile
@@ -10,9 +10,11 @@ services:
       - "7081:7081"
     environment:
       - ASPNETCORE_URLS=http://+:7080;http://+:7081
+    depends_on:
+      - bookify.db
   bookify.db:
     image: postgres:latest
-    container_name: bookify.db
+    container_name: Bookify.Db
     environment:
       - POSTGRES_DB=bookify
       - POSTGRES_USER=postgres
@@ -20,4 +22,15 @@ services:
     volumes:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
-      - 5432:5432
+      - "5432:5432"
+  bookify.idp:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: Bookify.Identity
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./.containers/identity:/opt/keycloak/data
+    ports:
+      - "18080:8080"

@@ -14,20 +14,26 @@ public sealed class User : Entity
 
     private User()
     {
+        FirstName = new FirstName(string.Empty);
+        LastName = new LastName(string.Empty);
+        Email = new Email(string.Empty);
     }
     
-    public required FirstName FirstName { get; init; }
-    public required LastName LastName { get; init; }
-    public required Email Email { get; init; }
+    public FirstName FirstName { get; init; }
+    public LastName LastName { get; init; }
+    public Email Email { get; init; }
+    public string IdentityId { get; private set; } = string.Empty;
 
     public static User Create(FirstName firstName, LastName lastName, Email email)
     {
-        var user = new User(Guid.NewGuid(), firstName, lastName, email)
-        {
-            FirstName = firstName, LastName = lastName, Email = email
-        };
+        var user = new User(Guid.NewGuid(), firstName, lastName, email);
         
         user.RaiseDomainEvent(new UserCreatedDomainEvent(user.Id));
         return user;
+    }
+
+    public void SetIdentityId(string identityId)
+    {
+        IdentityId = identityId;
     }
 }

@@ -5,18 +5,34 @@ services:
       context: "D:\\Devs\\Bookify"
       dockerfile: "src/Bookify.Api/Dockerfile"
       target: "base"
+      args:
+        BUILD_CONFIGURATION: "Debug"
     command: []
     entrypoint:
-    - "dotnet"
-    - "/app/bin/Debug/net8.0/Bookify.Api.dll"
+    - "/opt/rider-debugger/linux-x64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/rider-debugger/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57100"
+    - "--backend-port=57300"
+    - "--timeout=60"
     environment:
       ASPNETCORE_ENVIRONMENT: "Development"
       DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/rider-debugger"
+      RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "bookifyapi:dev"
-    ports: []
+    ports:
+    - "127.0.0.1:57005:57100"
+    - "127.0.0.1:57205:57300"
     volumes:
     - "C:\\Users\\kosta\\AppData\\Roaming\\Microsoft\\UserSecrets:/home/app/.microsoft/usersecrets"
     - "C:\\Users\\kosta\\.nuget\\packages:/home/app/.nuget/packages"
     - "D:\\Devs\\Bookify\\src\\Bookify.Api:/app:rw"
     - "D:\\Devs\\Bookify:/src:rw"
+    - "C:\\Users\\kosta\\AppData\\Local\\JetBrains\\RiderRemoteDebugger\\2024.2.4\\\
+      Linux64:/opt/rider-debugger"
+    - "C:\\Users\\kosta\\AppData\\Local\\Programs\\Rider\\bin:/etc/opt/rider-debugger/backend-log.xml"
+    - "C:\\Users\\kosta\\AppData\\Local\\JetBrains\\Rider2024.2\\log\\DebuggerWorker\\\
+      JetBrains.Debugger.Worker.2024_9_15_14_20_50:/var/opt/rider-debugger:rw"
     working_dir: "/app"
