@@ -5,7 +5,7 @@ using Bookify.Domain.Shared;
 
 namespace Bookify.Domain.Bookings;
 
-public sealed class Booking : Entity
+public sealed class Booking : Entity<Guid>
 {
     private Booking(Guid id,
         Guid apartmentId,
@@ -30,6 +30,7 @@ public sealed class Booking : Entity
     }
 
     private Booking()
+        : base(Guid.NewGuid())
     {
     }
 

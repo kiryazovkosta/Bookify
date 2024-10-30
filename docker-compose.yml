@@ -8,8 +8,8 @@ services:
     ports:
       - "7080:7080"
       - "7081:7081"
-    environment:
-      - ASPNETCORE_URLS=http://+:7080;http://+:7081
+    # environment:
+    #   - ASPNETCORE_URLS=http://+:7080;http://+:7081
     depends_on:
       - bookify.db
   bookify.db:
@@ -23,14 +23,3 @@ services:
       - ./.containers/database:/var/lib/postgresql/data
     ports:
       - "5432:5432"
-  bookify.idp:
-    image: quay.io/keycloak/keycloak:latest
-    container_name: Bookify.Identity
-    command: start-dev
-    environment:
-      - KEYCLOAK_ADMIN=admin
-      - KEYCLOAK_ADMIN_PASSWORD=admin
-    volumes:
-      - ./.containers/identity:/opt/keycloak/data
-    ports:
-      - "18080:8080"

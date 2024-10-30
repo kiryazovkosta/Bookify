@@ -1,11 +1,16 @@
 using Bookify.Application.Exceptions;
 using Bookify.Domain.Abstractions;
+using Bookify.Domain.Users;
 using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Infrastructure;
 
-public sealed class ApplicationDbContext : DbContext, IUnitOfWork
+public sealed class ApplicationDbContext : IdentityDbContext<User, Role, Guid,
+    IdentityUserClaim<Guid>, UserRole, IdentityUserLogin<Guid>,
+    IdentityRoleClaim<Guid>, IdentityUserToken<Guid>>, IUnitOfWork
 {
     private readonly IPublisher _publisher;
     
@@ -17,8 +22,8 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
         base.OnModelCreating(modelBuilder);
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
     }
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
@@ -38,7 +43,7 @@ public sealed class ApplicationDbContext : DbContext, IUnitOfWork
     private async Task PublishDomainEventsAsync()
     {
         var domainEvents = ChangeTracker
-            .Entries<Entity>()
+            .Entries<Entity<Guid>>()
             .Select(entry => entry.Entity)
             .SelectMany(entity =>
             {

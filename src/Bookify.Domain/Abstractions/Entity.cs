@@ -1,21 +1,18 @@
 namespace Bookify.Domain.Abstractions;
 
-public abstract class Entity : IEquatable<Entity>
+public abstract class Entity<T> : IEntity<T>, IEquatable<Entity<T>> 
+    where T : IEquatable<T>
 {
     private readonly List<IDomainEvent> _domainEvents = [];
 
-    protected Entity(Guid id)
+    protected Entity(T id)
     {
         Id = id;
     }
 
-    protected Entity()
-    {
-    }
+    public T Id { get; init; }
 
-    public Guid Id { get; init; }
-
-    public bool Equals(Entity? other)
+    public bool Equals(Entity<T>? other)
     {
         if (other is null)
         {
@@ -37,7 +34,7 @@ public abstract class Entity : IEquatable<Entity>
             return false;
         }
 
-        return obj is Entity entity && entity.Id.Equals(Id);
+        return obj is Entity<T> entity && entity.Id.Equals(Id);
     }
 
     public override int GetHashCode()

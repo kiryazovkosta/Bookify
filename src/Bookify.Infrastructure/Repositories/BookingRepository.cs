@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Infrastructure.Repositories;
 
-internal sealed class BookingRepository : Repository<Booking>, IBookingRepository
+internal sealed class BookingRepository : IBookingRepository
 {
     private static readonly BookingStatus[] ActiveBookingStatuses =
     [
@@ -12,10 +12,26 @@ internal sealed class BookingRepository : Repository<Booking>, IBookingRepositor
         BookingStatus.Confirmed,
         BookingStatus.Completed
     ];
+
+    private readonly ApplicationDbContext _context;
     
-    public BookingRepository(ApplicationDbContext dbContext)
-        : base(dbContext)
+    public BookingRepository(ApplicationDbContext context)
     {
+        _context = context;
+    }
+
+    public async Task<Booking?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+    {
+        return await _context
+            .Set<Booking>()
+            .FirstOrDefaultAsync(booking => booking.Id == id, cancellationToken);
+    }
+
+    public async Task AddAsync(Booking booking, CancellationToken cancellationToken = default)
+    {
+        await _context
+            .Set<Booking>()
+            .AddAsync(booking, cancellationToken);
     }
 
     public async Task<bool> IsOverlappingAsync(
@@ -23,7 +39,7 @@ internal sealed class BookingRepository : Repository<Booking>, IBookingRepositor
         DateRange duration,
         CancellationToken cancellationToken = default)
     {
-        return await DbContext
+        return await _context
             .Set<Booking>()
             .AnyAsync(
                 booking =>

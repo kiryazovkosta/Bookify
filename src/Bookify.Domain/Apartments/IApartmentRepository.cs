@@ -1,3 +1,5 @@
+using Bookify.Domain.Reviews;
+
 namespace Bookify.Domain.Apartments;
 
 public interface IApartmentRepository

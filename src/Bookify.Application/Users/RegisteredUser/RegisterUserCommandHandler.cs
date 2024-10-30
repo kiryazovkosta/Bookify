@@ -1,45 +1,33 @@
-using System.Net;
-using Bookify.Application.Abstractions.Authentication;
 using Bookify.Application.Abstractions.Messaging;
 using Bookify.Domain.Abstractions;
 using Bookify.Domain.Users;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bookify.Application.Users.RegisteredUser;
 
 public class RegisterUserCommandHandler : ICommandHandler<RegisterUserCommand, Guid>
 {
-    private readonly IAuthenticationService _authenticationService;
-    private readonly IUserRepository _userRepository;
+    private readonly UserManager<User> _userManager;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterUserCommandHandler(
-        IAuthenticationService authenticationService, 
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        UserManager<User> userManager, IUnitOfWork unitOfWork)
     {
-        _authenticationService = authenticationService ?? throw new ArgumentNullException(nameof(authenticationService));
-        _userRepository = userRepository ?? throw new ArgumentNullException(nameof(userRepository));
-        _unitOfWork = unitOfWork ?? throw new ArgumentNullException(nameof(unitOfWork));
+        _userManager = userManager;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<Result<Guid>> Handle(
-        RegisterUserCommand request, 
+        RegisterUserCommand request,
         CancellationToken cancellationToken)
     {
-        var user = User.Create(
-            new FirstName(request.FirstName),
-            new LastName(request.LastName),
-            new Email(request.Email));
-        
-        var identityId = await _authenticationService.RegisterAsync(
-            user,
-            request.Password,
-            cancellationToken);
-        
-        user.SetIdentityId(identityId);
-        await _userRepository.AddAsync(user, cancellationToken);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-        
+        var user = new User() { 
+            UserName = request.Email, 
+            Email = request.Email, 
+            FirstName = new FirstName(request.FirstName), 
+            LastName = new LastName(request.LastName), 
+            EmailConfirmed = true };
+
         return user.Id;
     }
 }

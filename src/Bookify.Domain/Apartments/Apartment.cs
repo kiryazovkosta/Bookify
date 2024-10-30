@@ -3,7 +3,7 @@ using Bookify.Domain.Shared;
 
 namespace Bookify.Domain.Apartments;
 
-public sealed class Apartment : Entity
+public sealed class Apartment : Entity<Guid>
 {
     public Apartment(
         Guid id,
@@ -27,6 +27,7 @@ public sealed class Apartment : Entity
     }
 
     private Apartment()
+        : base(Guid.NewGuid())
     {
         Name = new Name(string.Empty);
         Description = new Description(string.Empty);

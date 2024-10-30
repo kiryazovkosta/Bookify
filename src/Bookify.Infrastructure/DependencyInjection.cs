@@ -1,4 +1,3 @@
-using Bookify.Application.Abstractions.Authentication;
 using Bookify.Application.Abstractions.Data;
 using Bookify.Application.Abstractions.DateProvider;
 using Bookify.Application.Abstractions.Email;
@@ -7,17 +6,15 @@ using Bookify.Domain.Apartments;
 using Bookify.Domain.Bookings;
 using Bookify.Domain.Reviews;
 using Bookify.Domain.Users;
-using Bookify.Infrastructure.Authentication;
 using Bookify.Infrastructure.Data;
 using Bookify.Infrastructure.DateProvider;
 using Bookify.Infrastructure.Email;
 using Bookify.Infrastructure.Repositories;
 using Dapper;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 
 namespace Bookify.Infrastructure;
 
@@ -31,60 +28,37 @@ public static class DependencyInjection
         
         AddPersistence(services, configuration);
 
-        AddAuthentication(services, configuration);
 
         return services; 
     }
 
-    private static void AddAuthentication(IServiceCollection services, IConfiguration configuration)
-    {
-        services
-            .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            .AddJwtBearer();
-        services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
-
-        services.ConfigureOptions<JwtBearerOptionsSetup>();
-        
-        services.Configure<KeycloakOptions>(configuration.GetSection("Keycloak"));
-
-        services.AddTransient<AdminAuthorizationDelegateHandler>();
-        
-        services.AddHttpClient<IAuthenticationService, AuthenticationService>((serviceProvider, httpClient) =>
-        {
-            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            httpClient.BaseAddress = new Uri(keycloakOptions.AdminUrl);
-        }).AddHttpMessageHandler<AdminAuthorizationDelegateHandler>();
-
-        services.AddHttpClient<IJwtService, JwtService>((serviceProvider, httpClient) =>
-        {
-            var keycloakOptions = serviceProvider.GetRequiredService<IOptions<KeycloakOptions>>().Value;
-            httpClient.BaseAddress = new Uri(keycloakOptions.TokenUrl);
-        });
-        
-        services.AddHttpContextAccessor();
-        services.AddScoped<IUserContext, UserContext>();
-    }
-
     private static void AddPersistence(IServiceCollection services, IConfiguration configuration)
     {
-        var connectionString = 
-            configuration.GetConnectionString("Database") 
+        var connectionString =
+            configuration.GetConnectionString("Database")
             ?? throw new ArgumentNullException(nameof(configuration));
+
         services.AddDbContext<ApplicationDbContext>(options =>
         {
-            options.UseNpgsql(connectionString)
-                .UseSnakeCaseNamingConvention();
+            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
         });
 
+        services.AddIdentity<User, Role>()
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+
         services.AddScoped<IUserRepository, UserRepository>();
+
         services.AddScoped<IApartmentRepository, ApartmentRepository>();
+
         services.AddScoped<IBookingRepository, BookingRepository>();
+
         services.AddScoped<IReviewRepository, ReviewRepository>();
-        
+
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<ApplicationDbContext>());
-        
+
         services.AddSingleton<ISqlConnectionFactory>(_ => new SqlConnectionFactory(connectionString));
-        
+
         SqlMapper.AddTypeHandler(new DateOnlyTypeHandler());
     }
 }

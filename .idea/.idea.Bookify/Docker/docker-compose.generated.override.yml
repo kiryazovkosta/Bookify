@@ -23,16 +23,16 @@ services:
       RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "bookifyapi:dev"
     ports:
-    - "127.0.0.1:57005:57100"
-    - "127.0.0.1:57205:57300"
+    - "127.0.0.1:57002:57100"
+    - "127.0.0.1:57202:57300"
     volumes:
     - "C:\\Users\\kosta\\AppData\\Roaming\\Microsoft\\UserSecrets:/home/app/.microsoft/usersecrets"
     - "C:\\Users\\kosta\\.nuget\\packages:/home/app/.nuget/packages"
     - "D:\\Devs\\Bookify\\src\\Bookify.Api:/app:rw"
     - "D:\\Devs\\Bookify:/src:rw"
-    - "C:\\Users\\kosta\\AppData\\Local\\JetBrains\\RiderRemoteDebugger\\2024.2.4\\\
+    - "C:\\Users\\kosta\\AppData\\Local\\JetBrains\\RiderRemoteDebugger\\2024.2.5\\\
       Linux64:/opt/rider-debugger"
     - "C:\\Users\\kosta\\AppData\\Local\\Programs\\Rider\\bin:/etc/opt/rider-debugger/backend-log.xml"
     - "C:\\Users\\kosta\\AppData\\Local\\JetBrains\\Rider2024.2\\log\\DebuggerWorker\\\
-      JetBrains.Debugger.Worker.2024_9_15_14_20_50:/var/opt/rider-debugger:rw"
+      JetBrains.Debugger.Worker.2024_10_15_16_32_18:/var/opt/rider-debugger:rw"
     working_dir: "/app"

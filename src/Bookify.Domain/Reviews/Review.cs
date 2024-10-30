@@ -4,7 +4,7 @@ using Bookify.Domain.Reviews.Events;
 
 namespace Bookify.Domain.Reviews;
 
-public sealed class Review : Entity
+public sealed class Review : Entity<Guid>
 {
     private Review(
         Guid id,
@@ -25,6 +25,7 @@ public sealed class Review : Entity
     }
 
     private Review()
+        : base(Guid.NewGuid())
     {
         Rating = Rating.Create(1).Value ?? throw new InvalidOperationException();
         Comment = new Comment(string.Empty);
